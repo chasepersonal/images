@@ -1,6 +1,5 @@
-FROM debian:stretch-slim
+FROM docker:latest
 
-RUN apt-get update -yq \
-&& apt-get install curl gnupg sudo git jq -yq \
-&& curl -sL https://deb.nodesource.com/setup_10.x | bash - \
-&& apt-get install -yq nodejs
+RUN apk update  \
+&& apk add curl gnupg sudo git jq  \
+&& apk add nodejs-npm
