@@ -10,8 +10,8 @@ ARG USER_GID=${USER_UID}
 RUN apk update  \
     && apk add curl gnupg sudo git jq  \
     && apk add nodejs-npm \
-    && groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && addgroup -g $USER_GID $USERNAME \
+    && adduser -D -u $USER_UID -G $USERNAME $USERNAME \
     && mkdir -p /home/$USERNAME/.vscode-server /home/$USERNAME/.vscode-server-insiders \
     && chown ${USER_UID}:${USER_GID} /home/$USERNAME/.vscode-server* \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
