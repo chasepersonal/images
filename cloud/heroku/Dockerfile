@@ -1,5 +1,5 @@
-FROM debian:stretch-slim
+FROM docker:latest
 
-RUN apt-get update -y \
-    && apt-get install -y jq git curl \
+RUN apk update - \
+    && apk add bash jq git curl nodejs-npm \
     && curl https://cli-assets.heroku.com/install.sh | sh
