@@ -1,5 +1,6 @@
-FROM debian:stretch-slim
+FROM alpine:3.10.2
 
-RUN apt-get update \
-    && apt-get install -y python3-pip jq git software-properties-common \
+RUN apk update \
+    && apk add gcc libc-dev musl-dev jq python3 python3-dev py3-pip libffi-dev git vim openssl-dev \
+    && pip3 install --upgrade pip \
     && pip3 install 'ansible==2.8.5.0'
