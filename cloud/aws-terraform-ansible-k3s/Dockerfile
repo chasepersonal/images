@@ -1,8 +1,12 @@
 FROM alpine:3.10.2
 
+ARG USERNAME=dev
+
 RUN apk update \
     && apk add unzip \
+    sudo \
     wget \
+    curl \
     gcc \
     libc-dev \
     musl-dev \
@@ -12,21 +16,19 @@ RUN apk update \
     libffi-dev \
     git \
     vim \
-    which \
-    bash \
     openssh-client \
     openssl-dev \
-    curl \
     && wget https://releases.hashicorp.com/terraform/0.12.12/terraform_0.12.12_linux_amd64.zip \
     && unzip terraform_0.12.12_linux_amd64.zip \
     && chmod +x terraform \
     && mv terraform /usr/local/bin/ \
-    && rm -rf terraform_0.12.12_linux_amd64.zip \
-    && curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubectl \
-    && chmod +x kubectl \
-    && mv kubectl /bin/kubectl \
     && pip3 install --upgrade pip \
-    && pip3 install boto boto3 'ansible==2.8.5.0' \
-    && curl -sSL https://sdk.cloud.google.com | bash -s -- --disable-prompts --install-dir=/usr/local/gcloud
+    && pip3 install awscli boto boto3 'ansible==2.9.0.0' \
+    && curl -sLS https://raw.githubusercontent.com/alexellis/k3sup/master/get.sh  | sh \
+    && rm -rf terraform_0.12.12_linux_amd64.zip \
+    && addgroup -S $USERNAME \
+    && adduser -D -S $USERNAME -G $USERNAME \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
 
-ENV PATH $PATH:/usr/local/gcloud/google-cloud-sdk/bin
+USER dev

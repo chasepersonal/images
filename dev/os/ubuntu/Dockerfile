@@ -1,3 +1,7 @@
-FROM ubuntu:bionic
+FROM debian:stretch-slim
 
-RUN apt-get update && apt-get install wget ssh dnsutils git jq -y
+ARG USERNAME=dev
+
+RUN apt-get update && \
+    apt-get install wget ssh dnsutils sudo vim git jq -y && \
+    useradd -aG sudo $USERNAME 
