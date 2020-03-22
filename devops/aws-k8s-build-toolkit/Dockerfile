@@ -26,7 +26,7 @@ RUN apk update \
     && mv terraform /usr/local/bin/ \
     && rm -rf terraform_0.12.12_linux_amd64.zip \
     && pip3 install --upgrade pip \
-    && pip3 install awscli boto boto3 'ansible==2.9.0.0' \
+    && pip3 install awscli boto boto3 openshift 'PyYAML==3.12' 'ansible==2.9.0.0' \
     && curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.0/bin/linux/amd64/kubectl \
     && chmod +x kubectl \
     && mv kubectl /bin/kubectl \
@@ -36,7 +36,12 @@ RUN apk update \
     && rm -rf helm-v3.0.3-linux-amd64.tar.gz \
     && addgroup -S $USERNAME \
     && adduser -D -S $USERNAME -G $USERNAME \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
+    && mkdir /home/$USERNAME/workspace \
+    && chown -R $USERNAME:$USERNAME /home/$USERNAME/workspace
 
-USER dev
+USER $USERNAME
+
+WORKDIR /home/$USERNAME/workspace
+
+RUN mkdir ~/.aws \
+    && chown -R $USERNAME:$USERNAME ~/.aws
