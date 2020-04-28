@@ -34,11 +34,16 @@ RUN apk update \
     && tar -zxvf helm-v3.0.3-linux-amd64.tar.gz \
     && mv linux-amd64/helm /usr/local/bin/helm \
     && rm -rf helm-v3.0.3-linux-amd64.tar.gz \
+    && ARGO_VERSION=$(curl --silent "https://api.github.com/repos/argoproj/argo-cd/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/') \
+    && curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/$ARGO_VERSION/argocd-linux-amd64 \
+    && chmod +x /usr/local/bin/argocd \
     && addgroup -S $USERNAME \
     && adduser -D -S $USERNAME -G $USERNAME \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME \
     && mkdir /home/$USERNAME/workspace \
     && chown -R $USERNAME:$USERNAME /home/$USERNAME/workspace
-
+    
 USER $USERNAME
 
 WORKDIR /home/$USERNAME/workspace
