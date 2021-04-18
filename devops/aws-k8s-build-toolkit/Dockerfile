@@ -4,6 +4,7 @@ ARG USERNAME=dev
 
 RUN apk update \
     && apk add unzip \
+    py-cryptography \
     sudo \
     wget \
     curl \
@@ -40,7 +41,11 @@ RUN apk update \
     && chown -R $USERNAME:$USERNAME /home/$USERNAME/workspace \
     && VERSION=$(curl --silent "https://api.github.com/repos/argoproj/argo-cd/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/') \
     && curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/$VERSION/argocd-linux-amd64 \
-    && chmod +x /usr/local/bin/argocd
+    && chmod +x /usr/local/bin/argocd \
+    && curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp \
+    && mv /tmp/eksctl /usr/local/bin \
+    && echo "export ANSIBLE_CONFIG=$HOME/ansible-config/ansible.cfg" >> /home/$USERNAME/.bashrc \
+    && source /home/$USERNAME/.bashrc
 
 USER $USERNAME
 
